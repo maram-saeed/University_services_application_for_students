@@ -1,0 +1,180 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'dart:typed_data';
+import 'dart:html' as html;
+import 'package:printing/printing.dart';
+
+class OpenRecordForm extends StatefulWidget {
+  @override
+  _OpenRecordFormState createState() => _OpenRecordFormState();
+}
+
+class _OpenRecordFormState extends State<OpenRecordForm> {
+  final _formKey = GlobalKey<FormState>();
+  String name = '',
+      nationality = '',
+      universityNumber = '',
+      college = '',
+      section = '',
+      level = '',
+      academicStatus = '',
+      reason = '',
+      semester = '',
+      year = '';
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+    }
+  }
+
+  Future<void> _generatePdf() async {
+    final pdf = pw.Document();
+
+    // تحميل الخط العربي
+    final Uint8List fontData = await rootBundle
+        .load("assets/fonts/Cairo-Regular.ttf")
+        .then((data) => data.buffer.asUint8List());
+    final ttf = pw.Font.ttf(fontData.buffer.asByteData());
+
+    // final Uint8List logoData = await rootBundle
+    //     .load("assets/images/university_logo.png")
+    //     .then((data) => data.buffer.asUint8List());
+    // final image = pw.MemoryImage(logoData);
+
+    // تحميل شعار الجامعة
+    // Uint8List? logo;
+    // try {
+    //   logo = await rootBundle
+    //       .load("assets/images/university_logo.png")
+    //       .then((data) => data.buffer.asUint8List());
+    // } catch (e) {
+    //   print("⚠️ لم يتم العثور على صورة الشعار!");
+    // }
+
+    pdf.addPage(
+      pw.Page(
+        theme: pw.ThemeData.withFont(base: ttf),
+        build: (pw.Context context) => pw.Directionality(
+          textDirection: pw.TextDirection.rtl,
+          child: pw.Column(
+            children: [
+              //  if (logo != null) pw.Image(image, width: 80),
+              pw.Text("جامعة الجزيرة",
+                  style: pw.TextStyle(fontSize: 17, color: PdfColors.green500)),
+              pw.SizedBox(height: 10),
+              pw.Text("استمارة إعادة القيد",
+                  style: pw.TextStyle(
+                      fontSize: 20,
+                      //  fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.black)),
+              pw.SizedBox(height: 20),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  _buildTableRow("الاسم", name, ttf),
+                  _buildTableRow("الجنسية", nationality, ttf),
+                  _buildTableRow("الرقم الجامعي", universityNumber, ttf),
+                  _buildTableRow("الكلية", college, ttf),
+                  _buildTableRow("القسم", section, ttf),
+                  _buildTableRow("المستوى", level, ttf),
+                  _buildTableRow("الحالة الدراسية", academicStatus, ttf),
+                  _buildTableRow("سبب إعادة القيد", reason, ttf),
+                  _buildTableRow("الفصل الدراسي", semester, ttf),
+                  _buildTableRow("العام الجامعي", year, ttf),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    Uint8List bytes = await pdf.save();
+
+    final blob = html.Blob([bytes], 'application/pdf');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute('download', 're_enrollment_form.pdf')
+      ..click();
+    html.Url.revokeObjectUrl(url);
+  }
+
+  pw.TableRow _buildTableRow(String title, String value, pw.Font ttf) {
+    // تحديد الحد الأقصى لطول النص
+    String truncatedValue =
+        value.length > 30 ? value.substring(0, 30) + "..." : value;
+
+    return pw.TableRow(
+      children: [
+        pw.Padding(
+          padding: const pw.EdgeInsets.all(8.0),
+          child: pw.Text(truncatedValue,
+              style: pw.TextStyle(fontSize: 12, font: ttf)),
+        ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.all(8.0),
+          child: pw.Text(title,
+              style: pw.TextStyle(
+                  fontSize: 12, fontWeight: pw.FontWeight.bold, font: ttf)),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("فتح قيد")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                  decoration: InputDecoration(labelText: "الاسم"),
+                  onSaved: (value) => name = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "الجنسية"),
+                  onSaved: (value) => nationality = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "الرقم الجامعي"),
+                  onSaved: (value) => universityNumber = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "الكلية"),
+                  onSaved: (value) => college = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "القسم"),
+                  onSaved: (value) => section = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "المستوى"),
+                  onSaved: (value) => level = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "الحالة الدراسية"),
+                  onSaved: (value) => academicStatus = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "سبب فتح القيد"),
+                  onSaved: (value) => reason = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "الفصل الدراسي"),
+                  onSaved: (value) => semester = value!),
+              TextFormField(
+                  decoration: InputDecoration(labelText: "العام الجامعي"),
+                  onSaved: (value) => year = value!),
+              SizedBox(height: 20),
+              ElevatedButton(
+                  onPressed: () {
+                    _submitForm();
+                    _generatePdf();
+                  },
+                  child: Text("تحميل PDF")),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

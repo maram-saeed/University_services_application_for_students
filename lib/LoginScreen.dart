@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/MainMenu.dart';
 import 'package:flutter_application_2/TeacherPage/TeacherPage.dart';
 import 'StudentPage/StudentPage.dart';
 import 'EmployeePage/EmployeePage.dart';
@@ -41,12 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = emailController.text;
     String password = passwordController.text;
 
-    // هنا يمكنك جلب الدور الحقيقي من API أو قاعدة البيانات
-    // افتراضياً، سنحدد الدور يدوياً لاختبار التنقل
-    String userRole = "طالب"; // قم بتغيير هذا لاختبار الأدوار الأخرى
-
-    // تنفيذ التنقل بناءً على الدور
-    navigateBasedOnRole(userRole);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MainMenu()),
+    );
   }
 
   @override
