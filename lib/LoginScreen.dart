@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/MainMenu.dart';
-import 'package:flutter_application_2/TeacherPage/TeacherPage.dart';
-import 'StudentPage/StudentPage.dart';
-import 'EmployeePage/EmployeePage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,42 +8,49 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
-  // دالة لتحديد الصفحة المناسبة بناءً على الدور
-  void navigateBasedOnRole(String role) {
-    if (role == "طالب") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => StudentHomePage()),
-      );
-    } else if (role == "مدرس") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => TeacherHomePage()),
-      );
-    } else if (role == "موظف") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => EmployeeHomePage()),
-      );
-    } else {
+  // دالة تسجيل الدخول والتحقق من البيانات من قاعدة البيانات
+  Future<void> login() async {
+    String username = usernameController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("دور المستخدم غير معروف!")),
+        SnackBar(content: Text("يرجى إدخال اسم المستخدم وكلمة المرور")),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true; // إظهار مؤشر التحميل
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse("http://localhost:3000/studentlogin"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"username": username, "password": password}),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (data["success"]) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data["message"])),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("حدث خطأ أثناء الاتصال بالسيرفر")),
       );
     }
-  }
 
-  // دالة تنفيذ تسجيل الدخول (تحاكي التحقق من البيانات)
-  void login() {
-    String email = emailController.text;
-    String password = passwordController.text;
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainMenu()),
-    );
+    setState(() {
+      isLoading = false; // إخفاء مؤشر التحميل
+    });
   }
 
   @override
@@ -60,8 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: "البريد الإلكتروني"),
+                controller: usernameController,
+                decoration: InputDecoration(labelText: "اسم المستخدم"),
               ),
               TextFormField(
                 controller: passwordController,
@@ -69,10 +74,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: login, // عند الضغط يتم تنفيذ دالة تسجيل الدخول
-                child: Text("تسجيل الدخول"),
-              ),
+              isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: login, // استدعاء الدالة الجديدة
+                      child: Text("تسجيل الدخول"),
+                    ),
             ],
           ),
         ),
@@ -80,34 +87,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-// صفحات الأدوار المختلفة (يجب أن تكون موجودة في مشروعك)
-// class StudentHomePage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("الطالب")),
-//       body: Center(child: Text("مرحبًا بك أيها الطالب!")),
-//     );
-//   }
-// }
-
-// class TeacherHomePage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("المدرس")),
-//       body: Center(child: Text("مرحبًا بك أيها المدرس!")),
-//     );
-//   }
-// }
-
-// class DeanHomePage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("العميد")),
-//       body: Center(child: Text("مرحبًا بك أيها العميد!")),
-//     );
-//   }
-// }

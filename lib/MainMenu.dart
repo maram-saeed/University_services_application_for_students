@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/StudentPage/Assignments/AssignmentsPage.dart';
 import 'package:flutter_application_2/screens/Transactions/TransactionsMainPage.dart';
+import 'StudentPage/StudentProfile.dart';
 //import 'screens/Transactions/transactions.dart';
 
 class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("القائمة الرئيسية")),
+      appBar: AppBar(
+          title: Center(
+        child: Text("القائمة الرئيسية"),
+      )),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -32,12 +36,12 @@ class MainMenu extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
-          // if (index == 0) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => Test()),
-          //   );
-          // }
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StudentProfileScreen()),
+            );
+          }
         },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "الرئيسية"),

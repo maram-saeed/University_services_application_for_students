@@ -26,6 +26,14 @@ class CloseRecordPage extends StatelessWidget {
         // {"key": "deanApproval", "label": "موافقة عميد الكلية"},
         // {"key": "signature", "label": "التوقيع"},
       ],
+      employees: [
+        "المسجل العام",
+        "الحسابات",
+        "الأمين العام",
+        "عميد شؤون الطلبة",
+        "رئيس القسم",
+        "عميدالكلية"
+      ],
     );
   }
 }

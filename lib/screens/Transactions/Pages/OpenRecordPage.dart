@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import '../Form/TransactionForm.dart';
 
+/**
+ * :يتم إرسالها الى الموظفين التاليين
+ * المسجل العام
+ * الحسابات
+ * الأمين العام
+ * عميد شؤون الطلبة
+ * رئيس القسم
+ * عميد الكلية
+ */
+
 class OpenRecordPage extends StatelessWidget {
   const OpenRecordPage({super.key});
 
@@ -19,6 +29,14 @@ class OpenRecordPage extends StatelessWidget {
         {"key": "reason", "label": "سبب إعادة القيد"},
         {"key": "semester", "label": "الفصل الدراسي"},
         {"key": "year", "label": "العام الجامعي"},
+      ],
+      employees: [
+        "المسجل العام",
+        "الحسابات",
+        "الأمين العام",
+        "عميد شؤون الطلبة",
+        "رئيس القسم",
+        "عميدالكلية"
       ],
     );
   }

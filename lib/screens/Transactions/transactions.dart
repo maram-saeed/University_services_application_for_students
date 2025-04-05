@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/screens/Transactions/Pages/CloseRecordPage.dart';
 import 'package:flutter_application_2/screens/Transactions/Pages/OpenRecordPage.dart';
+import 'Pages/RequestForAForm.dart';
 
 class TransactionsPage extends StatelessWidget {
   const TransactionsPage({super.key});
@@ -19,22 +20,23 @@ class TransactionsPage extends StatelessWidget {
                     context, OpenRecordPage(), "استمارة إعادة قيد"),
                 buildTransactionButton(
                     context, CloseRecordPage(), "استمارة وقف قيد"),
-                buildTransactionButton(
-                    context, OpenRecordPage(), "طلب استخراج وثيقة"),
-                buildTransactionButton(context, OpenRecordPage(),
+                buildTransactionButton(context, RequestForAFormPage(),
                     "طلب استمارة سحب وثائق واخلاء طرف خريجين"),
-                buildTransactionButton(context, OpenRecordPage(),
-                    "طلب استمارة سحب ملف لغير الخريجين"),
-                buildTransactionButton(
-                    context, OpenRecordPage(), "بيان حالة طالب"),
-                buildTransactionButton(
-                    context, OpenRecordPage(), "استمارة سحب ثانوية"),
-                buildTransactionButton(
-                    context, OpenRecordPage(), "استمارة تظلم"),
-                buildTransactionButton(context, OpenRecordPage(),
-                    "استمارة تحويل من كلية إلى كلية"),
-                buildTransactionButton(
-                    context, OpenRecordPage(), "استمارة تحويل داخل الكلية"),
+                // buildTransactionButton(
+                //     context, OpenRecordPage(), "طلب استخراج وثيقة"),
+
+                // buildTransactionButton(context, OpenRecordPage(),
+                //     "طلب استمارة سحب ملف لغير الخريجين"),
+                // buildTransactionButton(
+                //     context, OpenRecordPage(), "بيان حالة طالب"),
+                // buildTransactionButton(
+                //     context, OpenRecordPage(), "استمارة سحب ثانوية"),
+                // buildTransactionButton(
+                //     context, OpenRecordPage(), "استمارة تظلم"),
+                // buildTransactionButton(context, OpenRecordPage(),
+                //     "استمارة تحويل من كلية إلى كلية"),
+                // buildTransactionButton(
+                //     context, OpenRecordPage(), "استمارة تحويل داخل الكلية"),
               ],
             ),
           ),
